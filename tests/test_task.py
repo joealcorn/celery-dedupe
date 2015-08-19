@@ -7,11 +7,17 @@ from celery_dedupe.storage.redis import RedisStorage
 from tests import settings
 
 redis = StrictRedis(db=9)
+storage = RedisStorage(redis, expiry=60)
 
 
-@task(base=DedupeTask, storage=RedisStorage(redis))
+@task(base=DedupeTask, storage=storage)
 def noop_task(*a, **kw):
     return None
+
+
+@task(base=DedupeTask, storage=storage)
+def raise_exception(*a, **kw):
+    raise AttributeError()
 
 
 class TestDedupeTask(object):
@@ -42,3 +48,13 @@ class TestDedupeTask(object):
     def test_apply_task_once(self):
         result = noop_task.delay(1)
         assert result.get() == None
+
+    def test_key_cleared_on_exception(self):
+        key = raise_exception._create_key(tuple(), dict())
+        assert not redis.exists(key)
+        try:
+            raise_exception.delay().get()
+        except AttributeError:
+            pass
+
+        assert not redis.exists(key)
