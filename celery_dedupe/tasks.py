@@ -29,8 +29,11 @@ class DedupeTask(Task):
         self.storage.release_lock(key)
 
     def _create_key(self, args, kwargs):
-        arg_string = ','.join([str(a) for a in args]) if args is not None else str(args)
-        kwarg_string = ','.join(['%s=%s' % (k, v) for k, v in kwargs.iteritems()]) if kwargs is not None else str(kwargs)
+        args = args or tuple()
+        kwargs = kwargs or dict()
+
+        arg_string = ','.join([str(a) for a in args])
+        kwarg_string = ','.join(['%s=%s' % (k, v) for k, v in kwargs.iteritems()])
         arg_hash = hashlib.md5(arg_string + kwarg_string).hexdigest()
         import_path = '%s.%s' % (self.__class__.__module__, self.__class__.__name__)
         return '%s:%s' % (import_path, arg_hash)
