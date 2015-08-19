@@ -7,4 +7,6 @@ install: "pip install -r dev-requirements.txt"
 services:
   - redis-server
 
-script: py.test
+script:
+    - celery worker -l debug --config tests.settings &> celery.log &
+    - py.test
