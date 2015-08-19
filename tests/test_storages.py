@@ -28,3 +28,10 @@ class TestRedisStorage(object):
         self.redis.setex(key, '1', 10)
         storage = RedisStorage(self.redis, expiry=10)
         assert not storage.obtain_lock(key, '1')
+
+    def test_release_lock(self):
+        key = uuid4()
+        self.redis.setex(key, '1', 10)
+        storage = RedisStorage(self.redis, expiry=10)
+        storage.release_lock(key)
+        assert not self.redis.get(key)

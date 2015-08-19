@@ -19,3 +19,5 @@ class RedisStorage(Storage):
 
         return obtained
 
+    def release_lock(self, key):
+        self.connection.delete(key)

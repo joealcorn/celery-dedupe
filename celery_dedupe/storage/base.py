@@ -15,4 +15,10 @@ class Storage(object):
         Responsible for obtaining a lock for the task
         :returns boolean: Whether lock could be obtained or not
         '''
-        raise NotImplementedError
+        raise NotImplementedError('Storages must implement obtain_lock method')
+
+    def release_lock(self, key):
+        '''
+        Responsible for releasing a lock
+        '''
+        raise NotImplementedError('Storages must implement release_lock method')
