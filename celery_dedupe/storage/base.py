@@ -10,6 +10,13 @@ class Storage(object):
         self.config = self.default_config.copy()
         self.config.update(config)
 
+    def get(self, key):
+        '''
+        Responsible for getting the data associated with a lock
+        :returns string:
+        '''
+        raise NotImplementedError('Storages must implement get method')
+
     def obtain_lock(self, key, value):
         '''
         Responsible for obtaining a lock for the task

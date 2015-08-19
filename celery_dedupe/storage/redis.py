@@ -12,6 +12,9 @@ class RedisStorage(Storage):
         'expiry': 0,
     }
 
+    def get(self, key):
+        return self.connection.get(key)
+
     def obtain_lock(self, key, value):
         obtained = self.connection.setnx(key, value)
         if self.config['expiry'] and obtained:
