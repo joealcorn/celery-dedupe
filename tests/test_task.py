@@ -29,16 +29,16 @@ class TestDedupeTask(object):
         task = DedupeTask()
 
         key = task._create_key(tuple(), {})
-        assert key == 'celery_dedupe.tasks.DedupeTask:d41d8cd98f00b204e9800998ecf8427e'
+        assert key == 'cd:celery_dedupe.tasks.DedupeTask:d41d8cd98f00b204e9800998ecf8427e'
 
         key = task._create_key((True, False), {})
-        assert key == 'celery_dedupe.tasks.DedupeTask:85eadac9a27eb1f6dccf00145df6003b'
+        assert key == 'cd:celery_dedupe.tasks.DedupeTask:85eadac9a27eb1f6dccf00145df6003b'
 
         key = task._create_key(tuple(), {'something': 2})
-        assert key == 'celery_dedupe.tasks.DedupeTask:a758dbbdf7ba75fc39732ab4cca53049'
+        assert key == 'cd:celery_dedupe.tasks.DedupeTask:a758dbbdf7ba75fc39732ab4cca53049'
 
         key = task._create_key(tuple(), {'something_else': 2})
-        assert key == 'celery_dedupe.tasks.DedupeTask:271a7d4a14d7892b87b8fc96d50507a9'
+        assert key == 'cd:celery_dedupe.tasks.DedupeTask:271a7d4a14d7892b87b8fc96d50507a9'
 
     def test_apply_task_twice(self):
         result1 = noop_task.apply_async(countdown=10)
