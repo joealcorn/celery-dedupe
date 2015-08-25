@@ -2,6 +2,22 @@
 
 celery-dedupe is a project that aims to be a pluggable solution for deduplicating queued celery tasks
 
+# Usage
+
+```python
+from celery.task import task
+from celery_dedupe import DedupeTask
+from celery_dedupe.storage.redis import RedisStorage
+from redis import StricRedit
+
+redis = StrictRedis()
+storage = RedisStorage(redis, expiry=60)
+
+@task(base=DedupeTask, storage=storage)
+def noop_task(*a, **kw):
+    return None
+```
+
 
 # Things to look out for
 
