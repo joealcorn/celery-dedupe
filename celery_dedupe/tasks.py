@@ -24,7 +24,7 @@ class DedupeTask(Task):
 
         return self.AsyncResult(existing_task_id)
 
-    def task_postrun(self, task_id, task, args, kwargs, retval, einfo):
+    def on_success(self, retval, task_id, args, kwargs):
         key = self._create_key(args, kwargs)
         self.storage.release_lock(key)
 
