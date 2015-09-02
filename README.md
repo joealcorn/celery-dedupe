@@ -21,7 +21,7 @@ def noop_task(*a, **kw):
 
 # Things to look out for
 
-- Tasks with an ETA or countdown
+- Tasks with an ETA, countdown or retry delays
 - Unregistered tasks
 - Unacknowledged tasks
 - Manually purging your broker

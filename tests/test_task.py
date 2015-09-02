@@ -20,6 +20,13 @@ def raise_exception(self, *a, **kw):
     raise AttributeError()
 
 
+@task(base=DedupeTask, storage=storage, bind=True)
+def retry_task(self, *a, **kw):
+    if self.request.retries == 0:
+        self.retry(countdown=0)
+    return True
+
+
 class TestDedupeTask(object):
 
     def setup_class(self):
@@ -64,3 +71,7 @@ class TestDedupeTask(object):
             assert False
 
         assert not redis.exists(key)
+
+    def test_task_retry(self):
+        result = retry_task.delay()
+        assert result.get()

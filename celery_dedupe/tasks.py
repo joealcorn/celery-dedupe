@@ -18,6 +18,10 @@ class DedupeTask(Task):
             return super(DedupeTask, self).apply_async(args=args, kwargs=kwargs, **kw)
 
         existing_task_id = self.storage.get(key)
+        if existing_task_id == task_id:
+            # This should be a retry, so add it to the broker anyway
+            return super(DedupeTask, self).apply_async(args=args, kwargs=kwargs, **kw)
+
         app = self._get_app()
         if app.conf.CELERY_ALWAYS_EAGER:
             warnings.warn('Using DedupeTask in conjunction with CELERY_ALWAYS_EAGER, can not return EagerResult')
