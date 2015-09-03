@@ -1,9 +1,12 @@
 import hashlib
+import logging
 import warnings
 
 from celery import Task
 from celery.result import EagerResult
 from celery.utils import uuid
+
+logger = logging.getLogger('celery_dedupe')
 
 
 class DedupeTask(Task):
@@ -15,17 +18,20 @@ class DedupeTask(Task):
         task_id = kw.setdefault('task_id', uuid())
 
         if self.storage.obtain_lock(key, task_id):
+            logger.debug('Queueing %s [%s]', task_id, key)
             return super(DedupeTask, self).apply_async(args=args, kwargs=kwargs, **kw)
 
         existing_task_id = self.storage.get(key)
         if existing_task_id == task_id:
             # This should be a retry, so add it to the broker anyway
+            logger.debug('Queueing %s for retry [%s]', task_id, key)
             return super(DedupeTask, self).apply_async(args=args, kwargs=kwargs, **kw)
 
         app = self._get_app()
         if app.conf.CELERY_ALWAYS_EAGER:
             warnings.warn('Using DedupeTask in conjunction with CELERY_ALWAYS_EAGER, can not return EagerResult')
 
+        logger.debug('%s already queued, returning AsyncResult [%s]', task_id, key)
         return self.AsyncResult(existing_task_id)
 
     def on_success(self, retval, task_id, args, kwargs):
