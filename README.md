@@ -8,7 +8,7 @@ celery-dedupe is a project that aims to be a pluggable solution for deduplicatin
 from celery.task import task
 from celery_dedupe import DedupeTask
 from celery_dedupe.storage.redis import RedisStorage
-from redis import StricRedis
+from redis import StrictRedis
 
 redis = StrictRedis()
 storage = RedisStorage(redis, expiry=60)
