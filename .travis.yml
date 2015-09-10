@@ -30,6 +30,12 @@ env:
     - CELERY_VERSION=3.1.16
     - CELERY_VERSION=3.1.17
     - CELERY_VERSION=3.1.18
+  global:
+    - PIP_DOWNLOAD_CACHE=".pip_download_cache"
+
+cache:
+  directories:
+    - .pip_download_cache
 
 script:
     - celery worker -l debug --config tests.settings -c 4 &
