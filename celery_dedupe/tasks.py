@@ -48,6 +48,6 @@ class DedupeTask(Task):
 
         arg_string = ','.join([str(a) for a in args])
         kwarg_string = ','.join(['%s=%s' % (k, v) for k, v in kwargs.items()])
-        arg_hash = hashlib.md5(arg_string + kwarg_string).hexdigest()
+        arg_hash = hashlib.md5((arg_string + kwarg_string).encode('utf8')).hexdigest()
         import_path = '%s.%s' % (self.__class__.__module__, self.__class__.__name__)
         return 'cd:%s:%s' % (import_path, arg_hash)
